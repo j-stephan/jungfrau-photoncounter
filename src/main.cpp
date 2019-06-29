@@ -11,7 +11,7 @@
  * see Alpakaconfig.hpp for all available
  */
 template <std::size_t MAPSIZE>
-using Accelerator = GpuCudaRt<MAPSIZE>;
+using Accelerator = Sycl<MAPSIZE>;
 using Config = JungfrauConfig;
 using ConcreteAcc = Accelerator<Config::MAPSIZE>;
 
