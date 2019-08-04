@@ -262,7 +262,7 @@ struct GetIterator<T, TBuf, alpaka::acc::AccGpuCudaRt<TArgs...>> {
 #ifdef ALPAKA_ACC_SYCL_ENABLED
 #ifdef ALPAKA_ACC_CPU_B_SEQ_T_SEQ_ENABLED
 //#############################################################################
-//! CUDA defines
+//! SYCL defines
 //!
 //! Defines Host, Device, etc. for the SYCL accelerator.
 template <std::size_t MAPSIZE> struct Sycl {
