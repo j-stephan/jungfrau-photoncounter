@@ -179,11 +179,12 @@ ALPAKA_FN_ACC ALPAKA_FN_INLINE static auto alpakaAtomicAdd(TArgs&&... args)
 // rename alpaka shared memory
 template <typename TData, typename... TArgs>
 ALPAKA_FN_ACC ALPAKA_FN_INLINE static auto alpakaSharedMemory(TArgs&&... args)
-    -> decltype(alpaka::block::shared::st::allocVar<TData, __COUNTER__>(
-        std::forward<TArgs>(args)...))
+    /*-> decltype(alpaka::block::shared::st::allocVar<TData, __COUNTER__>(
+        std::forward<TArgs>(args)...))*/
 {
-    return alpaka::block::shared::st::allocVar<TData, __COUNTER__>(
-        std::forward<TArgs>(args)...);
+    return alpaka::block::shared::dyn::getMem<TData>(std::forward<TArgs>(args)...);
+/*    return alpaka::block::shared::st::allocVar<TData, __COUNTER__>(
+        std::forward<TArgs>(args)...);*/
 }
 
 // rename alpaka get global thread idx

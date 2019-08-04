@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "../AlpakaHelper.hpp"
 #include "../CheapArray.hpp"
 #include <alpaka/alpaka.hpp>
@@ -10,7 +12,8 @@
 //! \tparam TBlockSize The block size.
 //! \tparam T The data type.
 //! \tparam TFunc The Functor type for the reduction function.
-template <uint32_t TBlockSize, typename T> struct ReduceKernel {
+// was: std::uint32_t
+template <unsigned int TBlockSize, typename T> struct ReduceKernel {
     ALPAKA_NO_HOST_ACC_WARNING
 
     //-----------------------------------------------------------------------------
@@ -31,7 +34,7 @@ template <uint32_t TBlockSize, typename T> struct ReduceKernel {
                                   TElem* destination,
                                   TIdx const& n) const -> void
     {
-        auto& sdata(alpakaSharedMemory<CheapArray<T, TBlockSize>>(acc));
+        auto sdata = *(alpakaSharedMemory<CheapArray<T, TBlockSize>>(acc));
 
         const uint32_t blockIndex(
             static_cast<uint32_t>(alpakaGetBlockIdx(acc)[0]));
@@ -114,3 +117,29 @@ template <uint32_t TBlockSize, typename T> struct ReduceKernel {
             destination->data[blockIndex] = sdata[0];
     }
 };
+
+namespace alpaka
+{
+    namespace kernel
+    {
+        namespace traits
+        {
+            template <typename TAcc,
+                      uint32_t TBlockSize,
+                      typename T>
+            struct BlockSharedMemDynSizeBytes<ReduceKernel<TBlockSize, T>,
+                                              TAcc>
+            {
+                template<typename TVec, typename... TArgs>
+                ALPAKA_FN_HOST_ACC static auto getBlockSharedMemDynSizeBytes(
+                        ReduceKernel<TBlockSize, T> const &,
+                        TVec const & /* blockThreadExtent */,
+                        TVec const & /* threadElemExtent */,
+                        TArgs const & ... /* args */) -> idx::Idx<TAcc>
+                {
+                    return sizeof(T) * TBlockSize;
+                }
+            };
+        }
+    }
+}

@@ -1,10 +1,13 @@
 #pragma once
 
+#include <cstdint>
+
 #include <alpaka/alpaka.hpp>
 
 //#############################################################################
 //! A cheap wrapper around a C-style array in heap memory.
-template <typename T, uint64_t size> struct CheapArray {
+// was: std::uint64_t
+template <typename T, unsigned long size> struct CheapArray {
     T data[size];
 
     //-----------------------------------------------------------------------------
