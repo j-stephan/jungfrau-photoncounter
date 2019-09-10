@@ -12,8 +12,7 @@
 //! \tparam TBlockSize The block size.
 //! \tparam T The data type.
 //! \tparam TFunc The Functor type for the reduction function.
-// was: std::uint32_t
-template <unsigned int TBlockSize, typename T> struct ReduceKernel {
+template <std::uint32_t TBlockSize, typename T> struct ReduceKernel {
     ALPAKA_NO_HOST_ACC_WARNING
 
     //-----------------------------------------------------------------------------

@@ -6,8 +6,7 @@
 
 //#############################################################################
 //! A cheap wrapper around a C-style array in heap memory.
-// was: std::uint64_t
-template <typename T, unsigned long size> struct CheapArray {
+template <typename T, std::uint64_t size> struct CheapArray {
     T data[size];
 
     //-----------------------------------------------------------------------------
