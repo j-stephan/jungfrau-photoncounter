@@ -21,7 +21,7 @@ auto main(int argc, char* argv[]) -> int
     t = Clock::now();
 
     // create a file cache for all input files
-    Filecache<Config>* fc = new Filecache<Config>(1024UL * 1024 * 1024 * 16);
+    Filecache<Config>* fc = new Filecache<Config>(1024UL * 1024 * 1024 * 5);
     DEBUG("filecache created");
 
     // load maps
@@ -35,7 +35,7 @@ auto main(int argc, char* argv[]) -> int
 
     typename Config::FramePackage<typename Config::DetectorData, ConcreteAcc>
         data(fc->loadMaps<typename Config::DetectorData, ConcreteAcc>(
-            "../../../data_pool/px_101016/Insu_6_tr_1_45d_250us__B_000000.dat",
+            "../../../data_pool/px_101016/Insu_6_tr_1_45d_250us__B_000000_smallaa.dat",
             //"../../../moench_data/"
             //"e17050_1_00018_00000_image.dat",
             true));
