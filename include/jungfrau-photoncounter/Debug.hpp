@@ -46,7 +46,7 @@ void saveClusters(std::string path, typename TConfig::template ClusterArray<TAlp
 template <typename TConfig, typename TBuffer>
 void save_image(std::string path, TBuffer* data, std::size_t frame_number)
 {
-#if (NDEBUG)
+//#if (NDEBUG)
     std::ofstream img;
     img.open(path + ".txt");
     for (std::size_t j = 0; j < TConfig::DIMY; j++) {
@@ -58,7 +58,7 @@ void save_image(std::string path, TBuffer* data, std::size_t frame_number)
         img << "\n";
     }
     img.close();
-#endif
+//#endif
 }
 
 template <typename TConfig, typename TAlpaka>

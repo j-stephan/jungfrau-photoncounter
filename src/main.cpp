@@ -85,7 +85,7 @@ auto main(int argc, char* argv[]) -> int
         energy = energy_data;
     boost::optional<
         typename Config::FramePackage<typename Config::PhotonMap, ConcreteAcc>&>
-        photon; // = photon_data;
+        photon = photon_data;
     boost::optional<
         typename Config::FramePackage<typename Config::SumMap, ConcreteAcc>&>
         sum = sum_data;
@@ -145,6 +145,10 @@ auto main(int argc, char* argv[]) -> int
                   "uploaded");
         }
     }
+
+    dispenser.synchronize();
+    if (photon)
+        save_image<Config>("photon", alpakaNativePtr(photon->data), 0);
 
     // save clusters (currently only used for debugging)
     if (clusters) {
