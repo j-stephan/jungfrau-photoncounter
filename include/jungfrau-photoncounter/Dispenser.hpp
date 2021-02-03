@@ -593,17 +593,21 @@ private:
     // copy offset data from last initialized device (if needed)
     if (init) {
       auto prevDevice = (nextFull + devices.size() - 1) % devices.size();
-      alpakaWait(devices[prevDevice].queue);
 
-      alpakaCopy(dev->queue, dev->pedestal, devices[prevDevice].pedestal,
-                 decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
+      if(prevDevice != dev->id)
+      {
+          alpakaWait(devices[prevDevice].queue);
 
-      alpakaCopy(dev->queue, dev->initialPedestal,
-                 devices[prevDevice].initialPedestal,
-                 decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
+          alpakaCopy(dev->queue, dev->pedestal, devices[prevDevice].pedestal,
+                     decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
 
-      alpakaCopy(dev->queue, dev->mask, devices[prevDevice].mask,
-                 decltype(TConfig::SINGLEMAP)(TConfig::SINGLEMAP));
+          alpakaCopy(dev->queue, dev->initialPedestal,
+                     devices[prevDevice].initialPedestal,
+                     decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
+
+          alpakaCopy(dev->queue, dev->mask, devices[prevDevice].mask,
+                     decltype(TConfig::SINGLEMAP)(TConfig::SINGLEMAP));
+      }
     }
 
     // increase nextFull and nextFree (because pedestal data isn't
@@ -670,9 +674,12 @@ private:
     for (uint64_t i = 0; i < devices.size() - 1; ++i) {
       uint64_t destination =
           (i + source + (i >= source ? 1 : 0)) % devices.size();
-      alpakaCopy(devices[source].queue, devices[destination].mask,
-                 devices[source].mask,
-                 decltype(TConfig::SINGLEMAP)(TConfig::SINGLEMAP));
+      if(source != destination)
+      {
+        alpakaCopy(devices[source].queue, devices[destination].mask,
+                     devices[source].mask,
+                     decltype(TConfig::SINGLEMAP)(TConfig::SINGLEMAP));
+      }
     }
     synchronize();
   }
@@ -685,19 +692,22 @@ private:
     uint64_t source = (nextFull + devices.size() - 1) % devices.size();
     DEBUG("distribute initial pedestal maps (from", source, ")");
     for (uint64_t i = 0; i < devices.size(); ++i) {
-      // distribute initial pedestal map (containing statistics etc.)
-      alpakaCopy(devices[source].queue, devices[i].initialPedestal,
-                 devices[source].initialPedestal,
-                 decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
+      if(source != i)
+      {
+          // distribute initial pedestal map (containing statistics etc.)
+          alpakaCopy(devices[source].queue, devices[i].initialPedestal,
+                     devices[source].initialPedestal,
+                     decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
 
-      // distribute pedestal map (with initial data)
-      alpakaCopy(devices[source].queue, devices[i].pedestal,
-                 devices[source].pedestal,
-                 decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
+          // distribute pedestal map (with initial data)
+          alpakaCopy(devices[source].queue, devices[i].pedestal,
+                     devices[source].pedestal,
+                     decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
 
-      // distribute mask map
-      alpakaCopy(devices[source].queue, devices[i].mask, devices[source].mask,
-                 decltype(TConfig::SINGLEMAP)(TConfig::SINGLEMAP));
+          // distribute mask map
+          alpakaCopy(devices[source].queue, devices[i].mask, devices[source].mask,
+                     decltype(TConfig::SINGLEMAP)(TConfig::SINGLEMAP));
+      }
     }
     synchronize();
   }
@@ -776,8 +786,11 @@ private:
     DEBUG("device", devices[prevDevice].id, "finished");
 
     devices[prevDevice].state = READY;
-    alpakaCopy(dev->queue, dev->pedestal, devices[prevDevice].pedestal,
-               decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
+    if(prevDevice != dev->id)
+    {
+        alpakaCopy(dev->queue, dev->pedestal, devices[prevDevice].pedestal,
+                   decltype(TConfig::PEDEMAPS)(TConfig::PEDEMAPS));
+    }
 
     nextFull = (nextFull + 1) % devices.size();
 
