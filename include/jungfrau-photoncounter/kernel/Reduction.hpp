@@ -114,3 +114,26 @@ template <uint32_t TBlockSize, typename T> struct ReduceKernel {
             destination->data[blockIndex] = sdata[0];
     }
 };
+
+namespace alpaka
+{
+    namespace traits
+    {
+        template <typename TAcc,
+                  uint32_t TBlockSize,
+                  typename T>
+        struct BlockSharedMemDynSizeBytes<ReduceKernel<TBlockSize, T>,
+                                          TAcc>
+        {
+            template<typename TVec, typename... TArgs>
+            ALPAKA_FN_HOST_ACC static auto getBlockSharedMemDynSizeBytes(
+                    ReduceKernel<TBlockSize, T> const &,
+                    TVec const & /* blockThreadExtent */,
+                    TVec const & /* threadElemExtent */,
+                    TArgs const & ... /* args */) -> Idx<TAcc>
+            {
+                return sizeof(T) * TBlockSize;
+            }
+        };
+    }
+}

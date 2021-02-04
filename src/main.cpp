@@ -12,6 +12,8 @@
  */
 #ifdef ALPAKA_ACC_GPU_CUDA_ENABLED
 template <std::size_t TMapSize> using Accelerator = GpuCudaRt<TMapSize>;
+#elif defined(ALPAKA_ACC_SYCL_ENABLED) && defined(ALPAKA_SYCL_BACKEND_ONEAPI)
+template <std::size_t TMapSize> using Accelerator = CpuSyclIntel<TMapSize>;
 #else
 template <std::size_t TMapSize> using Accelerator = CpuSerial<TMapSize>;
 #endif
@@ -48,8 +50,8 @@ const std::string pedestalPath =
     "../../../data_pool/px_101016/allpede_250us_1243__B_000000.dat";
 const std::string gainPath = "../../../data_pool/px_101016/gainMaps_M022.bin";
 const std::string dataPath =
-  "../../../data_pool/px_101016/Insu_6_tr_1_45d_250us__B_000000_3.dat";
-//"../../../data_pool/px_101016/Insu_6_tr_1_45d_250us__B_000000.dat";
+//"../../../data_pool/px_101016/Insu_6_tr_1_45d_250us__B_000000_3.dat";
+"../../../data_pool/px_101016/Insu_6_tr_1_45d_250us__B_000000.dat";
 #endif
 
 using ConcreteAcc = Accelerator<Config::MAPSIZE>;

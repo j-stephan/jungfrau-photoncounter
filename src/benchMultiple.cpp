@@ -18,6 +18,8 @@
 
 #ifdef ALPAKA_ACC_GPU_CUDA_ENABLED
 template <std::size_t TMapSize> using Accelerator = GpuCudaRt<TMapSize>;
+#elif defined(ALPAKA_ACC_SYCL_ENABLED) && defined(ALPAKA_SYCL_BACKEND_ONEAPI)
+template <std::size_t TMapSize> using Accelerator = CpuSyclIntel<TMapSize>;
 #else
 #ifdef ALPAKA_ACC_CPU_B_OMP2_T_SEQ_ENABLED
 template <std::size_t TMapSize> using Accelerator = CpuOmp2Blocks<TMapSize>;

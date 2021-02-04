@@ -368,3 +368,38 @@ struct GetIterator<T, TBuf, alpaka::acc::AccGpuCudaRt<TArgs...>> {
 };
 #endif
 #endif
+
+#if defined(ALPAKA_ACC_SYCL_ENABLED) && defined(ALPAKA_ACC_CPU_B_SEQ_T_SEQ_ENABLED) && defined(ALPAKA_SYCL_BACKEND_ONEAPI)
+//#############################################################################
+//! SYCL defines
+//!
+//! Defines Host, Device, etc. for the SYCL accelerator.
+template <std::size_t MAPSIZE> struct CpuSyclIntel {
+    using Host = alpaka::AccCpuSerial<Dim, Size>;
+    using Acc = alpaka::AccCpuSyclIntel<Dim, Size>;
+    using Queue = alpaka::QueueCpuSyclIntelNonBlocking;
+    using DevHost = alpaka::Dev<Host>;
+    using DevAcc = alpaka::Dev<Acc>;
+    using PltfHost = alpaka::Pltf<DevHost>;
+    using PltfAcc = alpaka::Pltf<DevAcc>;
+    using Event = alpaka::Event<Queue>;
+    template <typename T>
+    using AccBuf = alpaka::Buf<DevAcc, T, Dim, Size>;
+    template <typename T>
+    using HostBuf = alpaka::Buf<DevHost, T, Dim, Size>;
+    template <typename T>
+    using AccView = alpaka::ViewSubView<DevAcc, T, Dim, Size>;
+    template <typename T>
+    using HostView = alpaka::ViewSubView<DevHost, T, Dim, Size>;
+
+    static constexpr std::size_t STREAMS_PER_DEV = 1;
+    static constexpr Size elementsPerThread = 8u;
+    static constexpr Size threadsPerBlock = 128u;
+    static constexpr Size blocksPerGrid = (MAPSIZE + (elementsPerThread * threadsPerBlock) - 1) / (elementsPerThread * threadsPerBlock);
+};
+
+/*template <typename T, typename TBuf, typename... TArgs>
+struct GetIterator<T, TBuf, alpaka::acc::AccGpuCudaRt<TArgs...>> {
+    using Iterator = IteratorGpu<alpaka::acc::AccGpuCudaRt<TArgs...>, T, TBuf>;
+};*/
+#endif
