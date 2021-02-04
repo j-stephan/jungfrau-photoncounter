@@ -31,7 +31,7 @@ template <uint32_t TBlockSize, typename T> struct ReduceKernel {
                                   TElem* destination,
                                   TIdx const& n) const -> void
     {
-        auto& sdata(alpakaSharedMemory<CheapArray<T, TBlockSize>>(acc));
+        auto sdata = *(alpakaSharedMemory<CheapArray<T, TBlockSize>>(acc));
 
         const uint32_t blockIndex(
             static_cast<uint32_t>(alpakaGetBlockIdx(acc)[0]));
