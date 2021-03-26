@@ -670,13 +670,13 @@ private:
     DEBUG("checking stddev (on device", nextFull, ")");
 
     // create stddev check kernel object
-    CheckStdDevKernel<TConfig> checkStdDevKernel{};
+    /*CheckStdDevKernel<TConfig> checkStdDevKernel{};
     auto const checkStdDev(alpakaCreateKernel<TAlpaka>(
         getWorkDiv<TAlpaka>(), checkStdDevKernel,
         alpakaNativePtr(devices[nextFull].initialPedestal),
         alpakaNativePtr(devices[nextFull].mask), threshold));
 
-    alpakaEnqueueKernel(devices[nextFull].queue, checkStdDev);
+    alpakaEnqueueKernel(devices[nextFull].queue, checkStdDev);*/
   }
 
   /**
@@ -902,7 +902,7 @@ private:
       // the photon and cluster extraction kernels already include energy
       // conversion
 
-      ConversionKernel<TConfig> conversionKernel{};
+      /*ConversionKernel<TConfig> conversionKernel{};
       auto const conversion(alpakaCreateKernel<TAlpaka>(
           getWorkDiv<TAlpaka>(), conversionKernel, alpakaNativePtr(data),
           alpakaNativePtr(dev->gain), alpakaNativePtr(dev->initialPedestal),
@@ -910,7 +910,7 @@ private:
           alpakaNativePtr(energy), dev->numMaps, local_mask, pedestalFallback));
 
       DEBUG("enqueueing conversion kernel");
-      alpakaEnqueueKernel(dev->queue, conversion);
+      alpakaEnqueueKernel(dev->queue, conversion);*/
     } else if (flags.mode == 1) {
       // converting to photons (and energy)
       PhotonFinderKernel<TConfig> photonFinderKernel{};
@@ -934,7 +934,7 @@ private:
         // execute the clusterfinder with the pedestal update on every
         // frame
         // execute cluster finder
-        ClusterFinderKernel<TConfig, TAlpaka> clusterFinderKernel{};
+        /*ClusterFinderKernel<TConfig, TAlpaka> clusterFinderKernel{};
         auto const clusterFinder(alpakaCreateKernel<TAlpaka>(
             getWorkDiv<TAlpaka>(), clusterFinderKernel, alpakaNativePtr(data),
             alpakaNativePtr(dev->gain), alpakaNativePtr(dev->initialPedestal),
@@ -942,14 +942,14 @@ private:
             alpakaNativePtr(energy), alpakaNativePtr(clusters),
             alpakaNativePtr(usedClusters), local_mask, dev->numMaps, i,
             pedestalFallback));
-        alpakaEnqueueKernel(dev->queue, clusterFinder);
+        alpakaEnqueueKernel(dev->queue, clusterFinder);*/
       }
     }
 
     // find max value
     if (flags.maxValue) {
       // get the max value
-      for (uint32_t i = 0; i < numMaps; ++i) {
+      /*for (uint32_t i = 0; i < numMaps; ++i) {
         // reduce all images
         WorkDiv workdivRun1(
             decltype(TAlpaka::blocksPerGrid)(TAlpaka::blocksPerGrid),
@@ -988,12 +988,12 @@ private:
                                       alpakaNativePtr(maxValues), numMaps));
 
       DEBUG("enqueueing max value extraction kernel");
-      alpakaEnqueueKernel(dev->queue, maxValueCopy);
+      alpakaEnqueueKernel(dev->queue, maxValueCopy);*/
     }
 
     // summation
     if (flags.summation) {
-      DEBUG("enqueueing summation kernel");
+      /*DEBUG("enqueueing summation kernel");
 
       SummationKernel<TConfig> summationKernel{};
       auto const summation(alpakaCreateKernel<TAlpaka>(
@@ -1001,7 +1001,7 @@ private:
           decltype(TConfig::SUM_FRAMES)(TConfig::SUM_FRAMES), dev->numMaps,
           alpakaNativePtr(sum)));
 
-      alpakaEnqueueKernel(dev->queue, summation);
+      alpakaEnqueueKernel(dev->queue, summation);*/
     };
   }
 };

@@ -142,7 +142,7 @@ auto main(int argc, char* argv[]) -> int
 
     // set execution flags
     ExecutionFlags ef;
-    ef.mode = 0;
+    ef.mode = 1;
     ef.summation = 0;
     ef.masking = 1;
     ef.maxValue = 0;
